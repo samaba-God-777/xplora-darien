@@ -2,6 +2,7 @@
 FROM rust:1-slim-bookworm AS build
 WORKDIR /src
 COPY database/migrations database/migrations
+COPY database/seeds database/seeds
 COPY backend/Cargo.toml backend/Cargo.lock backend/
 # Cachea dependencias
 RUN mkdir -p backend/src && echo 'fn main(){}' > backend/src/main.rs && echo '' > backend/src/lib.rs \

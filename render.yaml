@@ -1,0 +1,37 @@
+# Blueprint de Render para XPLORA DARIÉN
+# Crea automáticamente:
+#   1. Base de datos PostgreSQL (xplora_darien)
+#   2. Servicio Web Rust (Axum) conectado a la base de datos
+version: "1"
+
+databases:
+  - name: xplora-darien-db
+    databaseName: xplora_darien
+    user: xplora
+    plan: free
+    region: oregon
+
+services:
+  - type: web
+    name: xplora-darien-api
+    runtime: docker
+    dockerfilePath: infrastructure/docker/backend.Dockerfile
+    dockerContext: .
+    plan: free
+    region: oregon
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: xplora-darien-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CORS_ORIGINS
+        value: https://xplora-darien.vercel.app,http://localhost:3000
+      - key: SITE_URL
+        value: https://xplora-darien.vercel.app
+      - key: RATE_LIMIT_ENABLED
+        value: "true"
+      - key: LOG_FORMAT
+        value: json

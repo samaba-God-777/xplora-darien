@@ -55,7 +55,9 @@ impl Config {
         }
         Ok(Self {
             database_url: std::env::var("DATABASE_URL").context("DATABASE_URL no definido")?,
-            bind_addr: std::env::var("BIND_ADDR").unwrap_or_else(|_| "127.0.0.1:8080".into()),
+            bind_addr: std::env::var("BIND_ADDR").unwrap_or_else(|_| {
+                std::env::var("PORT").map(|p| format!("0.0.0.0:{p}")).unwrap_or_else(|_| "127.0.0.1:8080".into())
+            }),
             jwt_secret,
             jwt_ttl_minutes: std::env::var("JWT_TTL_MINUTES").ok().and_then(|v| v.parse().ok()).unwrap_or(60),
             cors_origins: std::env::var("CORS_ORIGINS")

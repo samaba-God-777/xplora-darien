@@ -26,6 +26,33 @@ async fn main() -> anyhow::Result<()> {
     let db = database::connect(&config.database_url).await.context("conexión a PostgreSQL")?;
     database::MIGRATOR.run(&db).await.context("migraciones")?;
 
+    let dest_count: i64 = sqlx::query_scalar("SELECT count(*) FROM destinations")
+        .fetch_one(&db)
+        .await
+        .unwrap_or(0);
+    if dest_count == 0 {
+        tracing::info!("Base de datos vacía detectada, cargando catálogo inicial...");
+        const SEED_DESTINATIONS: &str = include_str!("../../database/seeds/001_destinations.sql");
+        const SEED_GALLERY: &str = include_str!("../../database/seeds/002_gallery.sql");
+        const SEED_MODELS: &str = include_str!("../../database/seeds/003_video_models.sql");
+        const SEED_PACKAGES: &str = include_str!("../../database/seeds/004_packages.sql");
+        const SEED_PACKAGES_MORE: &str = include_str!("../../database/seeds/005_packages_more.sql");
+        const SEED_TRANSLATIONS: &str = include_str!("../../database/seeds/006_package_translations_en.sql");
+
+        for (name, seed) in [
+            ("destinos", SEED_DESTINATIONS),
+            ("galeria", SEED_GALLERY),
+            ("modelos_video", SEED_MODELS),
+            ("paquetes", SEED_PACKAGES),
+            ("paquetes_adicionales", SEED_PACKAGES_MORE),
+            ("traducciones_en", SEED_TRANSLATIONS),
+        ] {
+            tracing::info!("Cargando semilla: {name}...");
+            sqlx::raw_sql(seed).execute(&db).await.context(format!("falló semilla {name}"))?;
+        }
+        tracing::info!("Catálogo inicial cargado con éxito.");
+    }
+
     let args: Vec<String> = std::env::args().skip(1).collect();
     match args.first().map(String::as_str) {
         Some("migrate") => {
