@@ -1,0 +1,169 @@
+@import "tailwindcss";
+/* public/ solo tiene medios (enlaces a imagen/, review/ y storage/media-hd): no se escanea en busca de clases. */
+@source not "../../public";
+
+/* ===== XPLORA DARIÉN · Design tokens =====
+   Amarillo dorado · Verde bosque · Marrón tierra · Blanco · Rojo distintivo */
+@theme {
+  --font-display: var(--font-fraunces), Georgia, serif;
+  --font-sans: var(--font-manrope), system-ui, sans-serif;
+
+  --color-gold-100: #fdf1d0;
+  --color-gold-300: #f9cf5c;
+  --color-gold-400: #f2b21b;
+  --color-gold-500: #d9960b;
+
+  --color-forest-50: #eef5ef;
+  --color-forest-100: #dcebdf;
+  --color-forest-700: #2a6239;
+  --color-forest-800: #1f4d2b;
+  --color-forest-900: #163a20;
+  --color-forest-950: #0c2213;
+
+  --color-earth-300: #d6bfa6;
+  --color-earth-500: #a07a57;
+  --color-earth-600: #87603d;
+  --color-earth-700: #6b3f1d;
+  --color-earth-800: #522f14;
+
+  --color-sand-50: #fbf8f1;
+  --color-sand-100: #f3ecdd;
+
+  --color-ink-600: #55584f;
+  --color-ink-700: #3c3f37;
+  --color-ink-800: #272a23;
+  --color-ink-900: #171a14;
+
+  --color-red-50: #fdeeec;
+  --color-red-600: #d7261e;
+  --color-red-700: #b01d16;
+}
+
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background: var(--color-sand-50);
+  color: var(--color-ink-900);
+  font-family: var(--font-sans);
+}
+
+/* ===== Marcadores del mapa ===== */
+.xd-marker {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border-radius: 9999px;
+  border: 3px solid #fff;
+  box-shadow: 0 0 0 3px var(--ring), 0 6px 16px rgb(0 0 0 / 0.35);
+  background: var(--ring);
+  cursor: pointer;
+  transition: width 0.25s cubic-bezier(0.22, 1, 0.36, 1), height 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.25s;
+}
+.xd-marker img {
+  width: 100%;
+  height: 100%;
+  border-radius: 9999px;
+  object-fit: cover;
+  pointer-events: none;
+}
+.xd-marker-label {
+  position: absolute;
+  left: 50%;
+  top: calc(100% + 8px);
+  transform: translateX(-50%) translateY(-2px);
+  white-space: nowrap;
+  padding: 3px 9px;
+  border-radius: 9999px;
+  background: rgb(12 34 19 / 0.88);
+  color: #fff;
+  font: 600 11px/1.4 var(--font-sans);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s, transform 0.18s;
+}
+@media (hover: hover) {
+  .xd-marker:hover {
+    box-shadow: 0 0 0 3px var(--color-gold-400), 0 8px 20px rgb(0 0 0 / 0.4);
+  }
+  .xd-marker:hover .xd-marker-label {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+.xd-marker:focus-visible {
+  outline: 3px solid var(--color-gold-400);
+  outline-offset: 3px;
+}
+.xd-marker.is-selected {
+  width: 60px;
+  height: 60px;
+  box-shadow: 0 0 0 4px var(--color-red-600), 0 10px 24px rgb(0 0 0 / 0.45);
+}
+.xd-marker.is-selected .xd-marker-label {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+  background: var(--color-red-600);
+}
+.xd-marker.is-selected::after {
+  content: "";
+  position: absolute;
+  inset: -10px;
+  border-radius: 9999px;
+  border: 2px solid var(--color-red-600);
+  animation: xd-pulse 1.8s ease-out infinite;
+}
+@keyframes xd-pulse {
+  from {
+    opacity: 0.8;
+    transform: scale(0.85);
+  }
+  to {
+    opacity: 0;
+    transform: scale(1.5);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .xd-marker,
+  .xd-marker-label {
+    transition: none;
+  }
+  .xd-marker.is-selected::after {
+    animation: none;
+  }
+}
+
+.maplibregl-ctrl-group {
+  border-radius: 14px !important;
+  overflow: hidden;
+}
+
+/* ===== Galería: botones del visor ===== */
+.lb-btn {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 9999px;
+  background: rgb(0 0 0 / 0.45);
+  color: #fff;
+  backdrop-filter: blur(8px);
+  transition: background 0.2s, opacity 0.2s, transform 0.15s;
+}
+.lb-btn:hover:not(:disabled) {
+  background: rgb(0 0 0 / 0.7);
+}
+.lb-btn:active:not(:disabled) {
+  transform: scale(0.94);
+}
+.lb-btn:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+.lb-btn:focus-visible {
+  outline: 3px solid var(--color-gold-400);
+  outline-offset: 2px;
+}

@@ -1,0 +1,21 @@
+//! XPLORA DARIÉN · API REST (Axum + SQLx + PostgreSQL).
+pub mod api;
+pub mod audit;
+pub mod auth;
+pub mod bookings;
+pub mod config;
+pub mod database;
+pub mod destinations;
+pub mod errors;
+pub mod gallery;
+pub mod guides;
+pub mod higgsfield;
+pub mod media;
+pub mod notifications;
+pub mod operations;
+pub mod packages;
+pub mod reviews;
+pub mod site;
+pub mod state;
+pub mod storage;
+pub mod validation;

@@ -1,0 +1,82 @@
+# XPLORA DARIÉN · entorno completo
+#   cp .env.example .env   (y completar secretos)
+#   docker compose up -d --build
+#   docker compose run --rm seed          # carga destinos y medios de pageWeb (una vez)
+#   docker compose run --rm -e ADMIN_PASSWORD=... api create-user correo@dominio "Nombre" superadmin
+name: xplora-darien
+
+services:
+  db:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_DB: xplora_darien
+      POSTGRES_USER: ${POSTGRES_USER:-xplora}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?defina POSTGRES_PASSWORD en .env}
+    volumes:
+      - pgdata:/var/lib/postgresql
+    ports:
+      - "127.0.0.1:5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-xplora} -d xplora_darien"]
+      interval: 5s
+      retries: 10
+
+  api:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/backend.Dockerfile
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER:-xplora}:${POSTGRES_PASSWORD}@db:5432/xplora_darien
+      JWT_SECRET: ${JWT_SECRET:?defina JWT_SECRET en .env (≥32 caracteres)}
+      JWT_TTL_MINUTES: ${JWT_TTL_MINUTES:-60}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000}
+      RATE_LIMIT_ENABLED: "true"
+      RUST_LOG: info,tower_http=info
+      PUBLIC_FILES_URL: ${PUBLIC_FILES_URL:-http://localhost:8080/files}
+      # Credenciales de Higgsfield: solo en el backend (https://console.higgsfield.ai)
+      HIGGSFIELD_API_KEY_ID: ${HIGGSFIELD_API_KEY_ID:-}
+      HIGGSFIELD_API_KEY_SECRET: ${HIGGSFIELD_API_KEY_SECRET:-}
+      MAIL_URL: ${MAIL_URL:-}
+      MAIL_FROM: ${MAIL_FROM:-XPLORA DARIÉN <reservas@localhost>}
+      SITE_URL: ${NEXT_PUBLIC_SITE_URL:-http://localhost:3000}
+    volumes:
+      # Originales de pageWeb en solo lectura + almacenamiento propio persistente.
+      - ./imagen:/pageweb/imagen:ro
+      - ./review/instagram:/pageweb/review/instagram:ro
+      - storage:/data/storage
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:8080:8080"
+
+  web:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/frontend.Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8080/api/v1}
+        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-http://localhost:3000}
+        NEXT_PUBLIC_FILES_URL: ${PUBLIC_FILES_URL:-http://localhost:8080/files}
+    depends_on:
+      api:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:3000:3000"
+
+  # Carga inicial de destinos y medios (idempotente). Ejecutar con: docker compose run --rm seed
+  seed:
+    image: postgres:18-alpine
+    profiles: ["tools"]
+    environment:
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - ./database/seeds:/seeds:ro
+    entrypoint: ["psql", "-h", "db", "-U", "${POSTGRES_USER:-xplora}", "-d", "xplora_darien", "-v", "ON_ERROR_STOP=1", "-f", "/seeds/001_destinations.sql", "-f", "/seeds/002_gallery.sql", "-f", "/seeds/003_video_models.sql", "-f", "/seeds/004_packages.sql"]
+    depends_on:
+      api:
+        condition: service_healthy
+
+volumes:
+  pgdata:
+  storage:

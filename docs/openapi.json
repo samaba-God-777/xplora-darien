@@ -1,0 +1,3245 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "XPLORA DARI\u00c9N API",
+        "description": "API REST de la plataforma tur\u00edstica XPLORA DARI\u00c9N (Dari\u00e9n, Panam\u00e1).",
+        "license": {
+            "name": ""
+        },
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/v1/admin/ai/generations": {
+            "get": {
+                "tags": [
+                    "ai-studio"
+                ],
+                "summary": "Historial de generaciones.",
+                "operationId": "list",
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "ai-studio"
+                ],
+                "summary": "Valida, estima el costo, comprueba el presupuesto y encola la generaci\u00f3n.",
+                "operationId": "create",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/GenerationInput"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "dry_run: estimaci\u00f3n"
+                    },
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorBody"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/admin/ai/generations/{id}": {
+            "get": {
+                "tags": [
+                    "ai-studio"
+                ],
+                "summary": "Detalle de una generaci\u00f3n (para seguimiento del estado).",
+                "operationId": "get",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/admin/ai/generations/{id}/cancel": {
+            "post": {
+                "tags": [
+                    "ai-studio"
+                ],
+                "summary": "Cancela una generaci\u00f3n que a\u00fan no empez\u00f3 a procesarse.",
+                "operationId": "cancel",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {},
+                    "409": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorBody"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/admin/ai/generations/{id}/review": {
+            "post": {
+                "tags": [
+                    "ai-studio"
+                ],
+                "summary": "Pasos 9\u201312: aprobar o descartar, guardar en la galer\u00eda, asociar y publicar.",
+                "operationId": "review",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ReviewInput"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "204": {}
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/admin/ai/models": {
+            "get": {
+                "tags": [
+                    "ai-studio"
+                ],
+                "summary": "Modelos de video disponibles con sus par\u00e1metros documentados.",
+                "operationId": "models",
+                "parameters": [
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "description": "text-to-video | image-to-video",
+                        "required": false,
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/admin/ai/presets": {
+            "get": {
+                "tags": [
+                    "ai-studio"
+                ],
+                "summary": "Formatos de salida por canal. La disponibilidad real depende del modelo elegido.",
+                "operationId": "presets",
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/admin/ai/settings": {
+            "put": {
+                "tags": [
+                    "ai-studio"
+                ],
+                "summary": "Define el presupuesto mensual y la concurrencia (requiere `settings.manage`).",
+                "operationId": "update_settings",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StudioSettings"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "204": {}
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/admin/ai/status": {
+            "get": {
+                "tags": [
+                    "ai-studio"
+                ],
+                "summary": "Estado del estudio: configuraci\u00f3n, presupuesto y gasto del mes.",
+                "operationId": "status",
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/admin/ai/templates": {
+            "get": {
+                "tags": [
+                    "ai-studio"
+                ],
+                "summary": "Biblioteca de prompts profesionales (editable).",
+                "operationId": "templates",
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/admin/ai/templates/{key}": {
+            "put": {
+                "tags": [
+                    "ai-studio"
+                ],
+                "summary": "Crea o actualiza una plantilla de prompt.",
+                "operationId": "upsert_template",
+                "parameters": [
+                    {
+                        "name": "key",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TemplateInput"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "204": {}
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/admin/bookings": {
+            "get": {
+                "tags": [
+                    "admin"
+                ],
+                "summary": "Lista de reservas (gesti\u00f3n).",
+                "operationId": "admin_list",
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/admin/bookings/{id}": {
+            "get": {
+                "tags": [
+                    "admin"
+                ],
+                "summary": "Detalle de una reserva con participantes, servicios e historial de estados.",
+                "operationId": "admin_get",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/admin/bookings/{id}/status": {
+            "post": {
+                "tags": [
+                    "admin"
+                ],
+                "summary": "Cambia el estado. Confirmar exige verificar cupo (salida programada o disponibilidad por fecha).",
+                "operationId": "change_status",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StatusChange"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "204": {},
+                    "409": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorBody"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/admin/destinations": {
+            "post": {
+                "tags": [
+                    "admin"
+                ],
+                "summary": "Crea un destino (queda en borrador).",
+                "operationId": "create",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DestinationInput"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Created"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorBody"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/admin/destinations/{id}": {
+            "put": {
+                "tags": [
+                    "admin"
+                ],
+                "summary": "Reemplaza los datos editables de un destino.",
+                "operationId": "update",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DestinationInput"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "204": {},
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorBody"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "admin"
+                ],
+                "summary": "Elimina (borrado l\u00f3gico) un destino.",
+                "operationId": "delete",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {}
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/admin/destinations/{id}/publish": {
+            "post": {
+                "tags": [
+                    "admin"
+                ],
+                "summary": "Publica, despublica o destaca un destino.",
+                "operationId": "publish",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PublishInput"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "204": {}
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/admin/media": {
+            "get": {
+                "tags": [
+                    "media-studio"
+                ],
+                "summary": "Biblioteca completa con filtros (incluye borradores).",
+                "operationId": "list",
+                "parameters": [
+                    {
+                        "name": "q",
+                        "in": "query",
+                        "description": "B\u00fasqueda en t\u00edtulo, descripci\u00f3n y ruta.",
+                        "required": false,
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "description": "photo | video | graphic",
+                        "required": false,
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "draft | published | archived",
+                        "required": false,
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "category",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "destination",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "source",
+                        "in": "query",
+                        "description": "pageWeb | upload | higgsfield",
+                        "required": false,
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "featured",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": [
+                                "boolean",
+                                "null"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "include_internal",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/admin/media/collections": {
+            "get": {
+                "tags": [
+                    "media-studio"
+                ],
+                "summary": "Colecciones con sus recursos.",
+                "operationId": "collections",
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "media-studio"
+                ],
+                "summary": "Crea o reemplaza una colecci\u00f3n (por slug).",
+                "operationId": "upsert_collection",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CollectionInput"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/admin/media/stats": {
+            "get": {
+                "tags": [
+                    "media-studio"
+                ],
+                "summary": "Estad\u00edsticas de la biblioteca y de la galer\u00eda (30 d\u00edas).",
+                "operationId": "stats",
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/admin/media/upload": {
+            "post": {
+                "tags": [
+                    "media-studio"
+                ],
+                "summary": "Sube una fotograf\u00eda o video (multipart, campo `file`). Queda en borrador.",
+                "operationId": "upload",
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "archivo duplicado"
+                    },
+                    "415": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorBody"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/admin/media/{id}": {
+            "get": {
+                "tags": [
+                    "media-studio"
+                ],
+                "summary": "Detalle administrativo de un recurso.",
+                "operationId": "get",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "media-studio"
+                ],
+                "summary": "Elimina (oculta) un recurso. Exige `?confirm=<id>`. Los originales de pageWeb nunca se borran del disco.",
+                "operationId": "delete",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    },
+                    {
+                        "name": "confirm",
+                        "in": "query",
+                        "description": "Confirmaci\u00f3n expl\u00edcita: debe repetir el id del recurso.",
+                        "required": false,
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ],
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {},
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorBody"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "media-studio"
+                ],
+                "summary": "Edita metadatos, clasificaci\u00f3n, asociaciones y publicaci\u00f3n.",
+                "operationId": "update",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/MediaUpdate"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "204": {}
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/admin/packages": {
+            "post": {
+                "tags": [
+                    "admin"
+                ],
+                "summary": "Crea un paquete en borrador con destinos, itinerario, incluye y no incluye.",
+                "operationId": "create",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PackageInput"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Created"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/admin/packages/{id}/availability": {
+            "put": {
+                "tags": [
+                    "admin"
+                ],
+                "summary": "Define disponibilidad por fecha (paquetes privados o personalizados sin salidas fijas).",
+                "operationId": "set_availability",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AvailabilityInput"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "204": {}
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/admin/packages/{id}/departures": {
+            "post": {
+                "tags": [
+                    "admin"
+                ],
+                "summary": "Programa una salida con cupo.",
+                "operationId": "add_departure",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DepartureInput"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Created"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/admin/packages/{id}/prices": {
+            "post": {
+                "tags": [
+                    "admin"
+                ],
+                "summary": "Agrega un precio verificado por el administrador (queda en el historial).",
+                "operationId": "add_price",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PriceInput"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Created"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/admin/packages/{id}/publish": {
+            "post": {
+                "tags": [
+                    "admin"
+                ],
+                "summary": "Publica, despublica o destaca un paquete. No se puede publicar sin al menos un precio vigente.",
+                "operationId": "publish",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PublishInput"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "204": {},
+                    "422": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorBody"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/auth/login": {
+            "post": {
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Inicia sesi\u00f3n y devuelve un JWT.",
+                "operationId": "login",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/LoginRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/LoginResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorBody"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/auth/me": {
+            "get": {
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Datos del usuario autenticado.",
+                "operationId": "me",
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MeResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorBody"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/bookings": {
+            "post": {
+                "tags": [
+                    "bookings"
+                ],
+                "summary": "Paso 7: enviar solicitud de reserva. Devuelve c\u00f3digo, resumen, itinerario y precio.",
+                "operationId": "create",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BookingRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BookingCreated"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorBody"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/bookings/price": {
+            "get": {
+                "tags": [
+                    "bookings"
+                ],
+                "summary": "Paso 6: consultar el precio total antes de enviar.",
+                "operationId": "price_preview",
+                "parameters": [
+                    {
+                        "name": "package",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "travel_date",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "adults",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        }
+                    },
+                    {
+                        "name": "children",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Breakdown"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorBody"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/destinations": {
+            "get": {
+                "tags": [
+                    "destinations"
+                ],
+                "summary": "Lista de destinos publicados (contenido en un idioma).",
+                "operationId": "list",
+                "parameters": [
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "description": "Idioma: `es` (por defecto) o `en`.",
+                        "required": false,
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "category",
+                        "in": "query",
+                        "description": "Clave de categor\u00eda (cascadas, playas\u2026).",
+                        "required": false,
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "featured",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": [
+                                "boolean",
+                                "null"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Destinos publicados",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/destinations/{slug}": {
+            "get": {
+                "tags": [
+                    "destinations"
+                ],
+                "summary": "Ficha completa de un destino publicado, con gu\u00edas y paquetes asociados.",
+                "operationId": "get",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "description": "Idioma: `es` (por defecto) o `en`.",
+                        "required": false,
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "category",
+                        "in": "query",
+                        "description": "Clave de categor\u00eda (cascadas, playas\u2026).",
+                        "required": false,
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "featured",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": [
+                                "boolean",
+                                "null"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorBody"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/gallery/categories": {
+            "get": {
+                "tags": [
+                    "gallery"
+                ],
+                "summary": "Categor\u00edas editoriales con portada y conteos.",
+                "operationId": "categories",
+                "parameters": [
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/gallery/hero": {
+            "get": {
+                "tags": [
+                    "gallery"
+                ],
+                "summary": "Contenido del hero cinematogr\u00e1fico: videos destacados (con p\u00f3ster) y fotos horizontales destacadas.",
+                "operationId": "hero",
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/gallery/media": {
+            "get": {
+                "tags": [
+                    "gallery"
+                ],
+                "summary": "Recursos publicados con filtros y paginaci\u00f3n.",
+                "operationId": "media",
+                "parameters": [
+                    {
+                        "name": "category",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "description": "photo | video",
+                        "required": false,
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "orientation",
+                        "in": "query",
+                        "description": "horizontal | vertical | square",
+                        "required": false,
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "destination",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "package",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "featured",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": [
+                                "boolean",
+                                "null"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/gallery/media/{id}": {
+            "get": {
+                "tags": [
+                    "gallery"
+                ],
+                "summary": "Ficha de un recurso con sus destinos, paquetes y experiencias (para los botones de acci\u00f3n).",
+                "operationId": "item",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorBody"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/gallery/media/{id}/events": {
+            "post": {
+                "tags": [
+                    "gallery"
+                ],
+                "summary": "Registra una interacci\u00f3n an\u00f3nima (sin IP ni datos personales).",
+                "operationId": "event",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/EventInput"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "204": {}
+                }
+            }
+        },
+        "/api/v1/guides": {
+            "get": {
+                "tags": [
+                    "guides"
+                ],
+                "summary": "Gu\u00edas publicados con sus destinos y certificaciones verificadas.",
+                "operationId": "list_guides",
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/health": {
+            "get": {
+                "tags": [
+                    "map"
+                ],
+                "summary": "Estado del servicio y de la base de datos.",
+                "operationId": "health",
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/map/points": {
+            "get": {
+                "tags": [
+                    "map"
+                ],
+                "summary": "Puntos del mapa con contenido en espa\u00f1ol e ingl\u00e9s (forma usada por el frontend).",
+                "operationId": "map_points",
+                "responses": {
+                    "200": {
+                        "description": "Destinos publicados para el mapa interactivo",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/packages": {
+            "get": {
+                "tags": [
+                    "packages"
+                ],
+                "summary": "Paquetes publicados.",
+                "operationId": "list",
+                "parameters": [
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "description": "Tipo de paquete (day_trip, weekend\u2026).",
+                        "required": false,
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "featured",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": [
+                                "boolean",
+                                "null"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/packages/compare": {
+            "get": {
+                "tags": [
+                    "packages"
+                ],
+                "summary": "Compara hasta tres paquetes publicados.",
+                "operationId": "compare",
+                "parameters": [
+                    {
+                        "name": "slugs",
+                        "in": "query",
+                        "description": "Slugs separados por coma (m\u00e1ximo 3).",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorBody"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/packages/{slug}": {
+            "get": {
+                "tags": [
+                    "packages"
+                ],
+                "summary": "Detalle completo de un paquete publicado (itinerario, incluye/no incluye, precios vigentes, salidas).",
+                "operationId": "get",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "description": "Tipo de paquete (day_trip, weekend\u2026).",
+                        "required": false,
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "featured",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": [
+                                "boolean",
+                                "null"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorBody"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/providers": {
+            "get": {
+                "tags": [
+                    "guides"
+                ],
+                "summary": "Proveedores publicados (con estado de verificaci\u00f3n).",
+                "operationId": "list_providers",
+                "parameters": [
+                    {
+                        "name": "category",
+                        "in": "query",
+                        "description": "guides | transport | lodging | food | tour_operator | activities | complementary",
+                        "required": false,
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "AvailabilityInput": {
+                "type": "object",
+                "required": [
+                    "date",
+                    "capacity"
+                ],
+                "properties": {
+                    "capacity": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "date": {
+                        "type": "string"
+                    },
+                    "is_blocked": {
+                        "type": "boolean"
+                    },
+                    "note": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    }
+                }
+            },
+            "BookingCreated": {
+                "type": "object",
+                "required": [
+                    "code",
+                    "status",
+                    "package",
+                    "travel_date",
+                    "adults",
+                    "children",
+                    "price",
+                    "itinerary",
+                    "message"
+                ],
+                "properties": {
+                    "adults": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "children": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "code": {
+                        "type": "string"
+                    },
+                    "itinerary": {},
+                    "message": {
+                        "type": "string"
+                    },
+                    "package": {},
+                    "price": {
+                        "$ref": "#/components/schemas/Breakdown"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "travel_date": {
+                        "type": "string"
+                    }
+                }
+            },
+            "BookingRequest": {
+                "type": "object",
+                "required": [
+                    "package",
+                    "travel_date",
+                    "adults",
+                    "visitor"
+                ],
+                "properties": {
+                    "adults": {
+                        "type": "integer",
+                        "format": "int32",
+                        "description": "Participantes (paso 3)."
+                    },
+                    "children": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "departure_id": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "uuid",
+                        "description": "Salida programada, si el paquete las tiene."
+                    },
+                    "locale": {
+                        "type": "string"
+                    },
+                    "notes": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "package": {
+                        "type": "string",
+                        "description": "Slug del paquete (paso 1)."
+                    },
+                    "services": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ServiceRequest"
+                        },
+                        "description": "Servicios adicionales (paso 5); se cotizan aparte."
+                    },
+                    "travel_date": {
+                        "type": "string",
+                        "description": "Fecha de viaje (paso 2).",
+                        "example": "2027-02-10"
+                    },
+                    "visitor": {
+                        "$ref": "#/components/schemas/VisitorInput",
+                        "description": "Datos del visitante (paso 4)."
+                    }
+                }
+            },
+            "Breakdown": {
+                "type": "object",
+                "required": [
+                    "priced",
+                    "currency",
+                    "subtotal",
+                    "discount_total",
+                    "tax_total",
+                    "total"
+                ],
+                "properties": {
+                    "adult_unit": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "applied_rate": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "child_unit": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "currency": {
+                        "type": "string"
+                    },
+                    "discount_total": {
+                        "type": "string"
+                    },
+                    "priced": {
+                        "type": "boolean",
+                        "description": "`false` si el paquete no tiene precio configurado: la solicitud queda \"a cotizar\"."
+                    },
+                    "subtotal": {
+                        "type": "string"
+                    },
+                    "tax_total": {
+                        "type": "string"
+                    },
+                    "total": {
+                        "type": "string"
+                    }
+                }
+            },
+            "CollectionInput": {
+                "type": "object",
+                "required": [
+                    "slug",
+                    "title"
+                ],
+                "properties": {
+                    "description": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "media_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    },
+                    "slug": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "title": {
+                        "type": "string"
+                    }
+                }
+            },
+            "Created": {
+                "type": "object",
+                "required": [
+                    "id"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                }
+            },
+            "DepartureInput": {
+                "type": "object",
+                "required": [
+                    "departure_date",
+                    "return_date",
+                    "capacity"
+                ],
+                "properties": {
+                    "capacity": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "departure_date": {
+                        "type": "string",
+                        "example": "2027-01-15"
+                    },
+                    "meeting_point": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "meeting_time": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "return_date": {
+                        "type": "string"
+                    }
+                }
+            },
+            "DestinationInput": {
+                "type": "object",
+                "required": [
+                    "slug",
+                    "name",
+                    "category",
+                    "region",
+                    "summary",
+                    "description",
+                    "latitude",
+                    "longitude",
+                    "difficulty"
+                ],
+                "properties": {
+                    "access_info": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "activities": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "category": {
+                        "type": "string"
+                    },
+                    "coords_verified": {
+                        "type": "boolean"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "difficulty": {
+                        "type": "string",
+                        "example": "moderada"
+                    },
+                    "history": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "latitude": {
+                        "type": "number",
+                        "format": "double"
+                    },
+                    "longitude": {
+                        "type": "number",
+                        "format": "double"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "region": {
+                        "type": "string"
+                    },
+                    "safety_info": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "season": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "slug": {
+                        "type": "string"
+                    },
+                    "summary": {
+                        "type": "string"
+                    },
+                    "visit_duration": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    }
+                }
+            },
+            "DestinationLink": {
+                "type": "object",
+                "required": [
+                    "slug",
+                    "attribution"
+                ],
+                "properties": {
+                    "attribution": {
+                        "type": "string",
+                        "description": "verified | owner_caption | owner_filename | visible_signage | editorial_guess"
+                    },
+                    "slug": {
+                        "type": "string"
+                    }
+                }
+            },
+            "ErrorBody": {
+                "type": "object",
+                "required": [
+                    "error"
+                ],
+                "properties": {
+                    "error": {
+                        "$ref": "#/components/schemas/ErrorDetail"
+                    }
+                }
+            },
+            "ErrorDetail": {
+                "type": "object",
+                "required": [
+                    "code",
+                    "message"
+                ],
+                "properties": {
+                    "code": {
+                        "type": "string"
+                    },
+                    "details": {
+                        "type": [
+                            "object",
+                            "null"
+                        ]
+                    },
+                    "message": {
+                        "type": "string"
+                    }
+                }
+            },
+            "EventInput": {
+                "type": "object",
+                "required": [
+                    "event"
+                ],
+                "properties": {
+                    "cta": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "destination | package | experience | booking"
+                    },
+                    "event": {
+                        "type": "string",
+                        "description": "view | lightbox_open | play | complete | cta_click | share"
+                    }
+                }
+            },
+            "GenerationInput": {
+                "type": "object",
+                "required": [
+                    "model",
+                    "prompt"
+                ],
+                "properties": {
+                    "category": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "destination": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "dry_run": {
+                        "type": "boolean",
+                        "description": "Solo estima el costo; no crea la generaci\u00f3n."
+                    },
+                    "model": {
+                        "type": "string",
+                        "description": "Endpoint del modelo, p.ej. `kling-video/v3.0/pro/text-to-video`."
+                    },
+                    "package": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "params": {
+                        "type": "object",
+                        "description": "Par\u00e1metros adicionales admitidos por el modelo (duration, aspect_ratio, \u2026)."
+                    },
+                    "prompt": {
+                        "type": "string"
+                    },
+                    "reference_media_id": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "uuid",
+                        "description": "Fotograf\u00eda de la biblioteca usada como referencia (modelos image-to-video)."
+                    },
+                    "template": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    }
+                }
+            },
+            "InclusionInput": {
+                "type": "object",
+                "required": [
+                    "kind",
+                    "description"
+                ],
+                "properties": {
+                    "description": {
+                        "type": "string"
+                    },
+                    "kind": {
+                        "type": "string"
+                    }
+                }
+            },
+            "ItineraryActivityInput": {
+                "type": "object",
+                "required": [
+                    "title"
+                ],
+                "properties": {
+                    "description": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "destination": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "end": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "start": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "example": "08:00"
+                    },
+                    "title": {
+                        "type": "string"
+                    }
+                }
+            },
+            "ItineraryDayInput": {
+                "type": "object",
+                "required": [
+                    "day",
+                    "title"
+                ],
+                "properties": {
+                    "activities": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ItineraryActivityInput"
+                        }
+                    },
+                    "day": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "description": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "lodging": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "meals": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "recommendations": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "transport": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    }
+                }
+            },
+            "LoginRequest": {
+                "type": "object",
+                "required": [
+                    "email",
+                    "password"
+                ],
+                "properties": {
+                    "email": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    }
+                }
+            },
+            "LoginResponse": {
+                "type": "object",
+                "required": [
+                    "access_token",
+                    "token_type",
+                    "expires_in",
+                    "user"
+                ],
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "expires_in": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "token_type": {
+                        "type": "string"
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/MeResponse"
+                    }
+                }
+            },
+            "MeResponse": {
+                "type": "object",
+                "required": [
+                    "id",
+                    "email",
+                    "roles",
+                    "permissions"
+                ],
+                "properties": {
+                    "email": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "permissions": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "roles": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "MediaUpdate": {
+                "type": "object",
+                "properties": {
+                    "categories": {
+                        "type": [
+                            "array",
+                            "null"
+                        ],
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "description": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "destinations": {
+                        "type": [
+                            "array",
+                            "null"
+                        ],
+                        "items": {
+                            "$ref": "#/components/schemas/DestinationLink"
+                        }
+                    },
+                    "is_featured": {
+                        "type": [
+                            "boolean",
+                            "null"
+                        ]
+                    },
+                    "packages": {
+                        "type": [
+                            "array",
+                            "null"
+                        ],
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "status": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "draft | published | archived"
+                    },
+                    "tags": {
+                        "type": [
+                            "array",
+                            "null"
+                        ],
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "title": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    }
+                }
+            },
+            "PackageInput": {
+                "type": "object",
+                "required": [
+                    "code",
+                    "slug",
+                    "name",
+                    "package_type",
+                    "short_description",
+                    "description",
+                    "days",
+                    "nights",
+                    "difficulty",
+                    "min_participants",
+                    "currency",
+                    "tax_rate"
+                ],
+                "properties": {
+                    "cancellation_policy": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "code": {
+                        "type": "string"
+                    },
+                    "currency": {
+                        "type": "string"
+                    },
+                    "days": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "destinations": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "difficulty": {
+                        "type": "string"
+                    },
+                    "exclusions": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "fees_note": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "inclusions": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/InclusionInput"
+                        }
+                    },
+                    "itinerary": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ItineraryDayInput"
+                        }
+                    },
+                    "max_capacity": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "format": "int32"
+                    },
+                    "min_age": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "format": "int32"
+                    },
+                    "min_participants": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "nights": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "package_type": {
+                        "type": "string",
+                        "example": "two_days_one_night"
+                    },
+                    "packing_list": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "payment_terms": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "short_description": {
+                        "type": "string"
+                    },
+                    "slug": {
+                        "type": "string"
+                    },
+                    "special_requirements": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "tax_rate": {
+                        "type": "string",
+                        "example": "0.07"
+                    },
+                    "weather_notes": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    }
+                }
+            },
+            "PriceInput": {
+                "type": "object",
+                "required": [
+                    "price_type",
+                    "amount"
+                ],
+                "properties": {
+                    "amount": {
+                        "type": "string",
+                        "example": "120.00"
+                    },
+                    "discount_pct": {
+                        "type": "string",
+                        "example": "0"
+                    },
+                    "min_group_size": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "format": "int32"
+                    },
+                    "price_type": {
+                        "type": "string",
+                        "description": "per_person | adult | child | group | special"
+                    },
+                    "valid_from": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "valid_to": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    }
+                }
+            },
+            "PublishInput": {
+                "type": "object",
+                "properties": {
+                    "is_featured": {
+                        "type": [
+                            "boolean",
+                            "null"
+                        ]
+                    },
+                    "status": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "draft | published | archived"
+                    }
+                }
+            },
+            "ReviewInput": {
+                "type": "object",
+                "required": [
+                    "decision"
+                ],
+                "properties": {
+                    "categories": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "decision": {
+                        "type": "string",
+                        "description": "approve | discard"
+                    },
+                    "description": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "destinations": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "packages": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "publish": {
+                        "type": "boolean"
+                    },
+                    "title": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    }
+                }
+            },
+            "ServiceRequest": {
+                "type": "object",
+                "required": [
+                    "description",
+                    "quantity"
+                ],
+                "properties": {
+                    "description": {
+                        "type": "string"
+                    },
+                    "quantity": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                }
+            },
+            "StatusChange": {
+                "type": "object",
+                "required": [
+                    "status"
+                ],
+                "properties": {
+                    "note": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "status": {
+                        "type": "string",
+                        "description": "pending | quoting | confirmed | paid | cancelled | completed"
+                    }
+                }
+            },
+            "StudioSettings": {
+                "type": "object",
+                "properties": {
+                    "max_concurrent": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "format": "int32"
+                    },
+                    "monthly_budget_usd": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    }
+                }
+            },
+            "TemplateInput": {
+                "type": "object",
+                "required": [
+                    "name",
+                    "prompt",
+                    "aspect_ratio",
+                    "duration"
+                ],
+                "properties": {
+                    "aspect_ratio": {
+                        "type": "string",
+                        "description": "16:9 | 9:16 | 1:1 | 4:5"
+                    },
+                    "category": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "description": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "duration": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "negative_prompt": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "prompt": {
+                        "type": "string"
+                    }
+                }
+            },
+            "VisitorInput": {
+                "type": "object",
+                "required": [
+                    "first_name",
+                    "last_name",
+                    "email",
+                    "phone",
+                    "country"
+                ],
+                "properties": {
+                    "country": {
+                        "type": "string",
+                        "description": "ISO 3166-1 alfa-2, p.ej. PA"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "first_name": {
+                        "type": "string"
+                    },
+                    "last_name": {
+                        "type": "string"
+                    },
+                    "phone": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "securitySchemes": {
+            "bearer": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "map",
+            "description": "Mapa interactivo"
+        },
+        {
+            "name": "destinations",
+            "description": "Cat\u00e1logo de destinos"
+        },
+        {
+            "name": "packages",
+            "description": "Paquetes tur\u00edsticos y comparador"
+        },
+        {
+            "name": "bookings",
+            "description": "Solicitudes de reserva"
+        },
+        {
+            "name": "guides",
+            "description": "Gu\u00edas y proveedores"
+        },
+        {
+            "name": "gallery",
+            "description": "Cinematic Gallery (p\u00fablico)"
+        },
+        {
+            "name": "media-studio",
+            "description": "Media Management Studio"
+        },
+        {
+            "name": "ai-studio",
+            "description": "XPLORA AI Video Studio (Higgsfield)"
+        },
+        {
+            "name": "auth",
+            "description": "Autenticaci\u00f3n"
+        },
+        {
+            "name": "admin",
+            "description": "Panel administrativo (requiere JWT y permisos)"
+        }
+    ]
+}
